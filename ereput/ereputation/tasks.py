@@ -5,19 +5,19 @@ from TwitterAPI import TwitterAPI
 from requests_aws4auth import AWS4Auth
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 import json
-import access.py
+import ereputation.access as ac
 
 @app.task
 def stream_kinesis(keyword):
     # Twitter credentials
 
-    api = TwitterAPI(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
+    api = TwitterAPI(ac.TWITTER_CONSUMER_KEY, ac.TWITTER_CONSUMER_SECRET, ac.TWITTER_ACCESS_TOKEN, ac.TWITTER_ACCESS_SECRET)
 
     print('--------- STARTING STTREAMING KINESIS --------')
     # AWS credentials
 
-    kinesis = boto3.client('kinesis', aws_access_key_id= AWS_ACCESS_KEY, aws_secret_access_key= AWS_SECRET_ACCESS_KEY, region_name='eu-west-1')
-    client_comprehend = boto3.client('comprehend', aws_access_key_id= AWS_ACCESS_KEY, aws_secret_access_key= AWS_SECRET_ACCESS_KEY)
+    kinesis = boto3.client('kinesis', aws_access_key_id= ac.AWS_ACCESS_KEY, aws_secret_access_key= ac.AWS_SECRET_ACCESS_KEY, region_name='eu-west-1')
+    client_comprehend = boto3.client('comprehend', aws_access_key_id= ac.AWS_ACCESS_KEY, aws_secret_access_key= ac.AWS_SECRET_ACCESS_KEY)
 
     tweets = api.request('statuses/filter', {'track': keyword, 'language' : 'en'})
 
@@ -40,7 +40,7 @@ def stream_kinesis(keyword):
 def create_index_elastic(keyword):
     region = 'eu-west-1' # e.g. us-west-1
     print('------- START ELASTIC JOB ----- CREATING INDEX ' + keyword)
-    awsauth = AWS4Auth(AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, 'eu-west-1', 'es')
+    awsauth = AWS4Auth(ac.AWS_ACCESS_KEY, ac.AWS_SECRET_ACCESS_KEY, 'eu-west-1', 'es')
     host = 'https://search-ereputation-6xwzbulgnn4ebyvrp47ryvbhje.eu-west-1.es.amazonaws.com' # the Amazon ES domain, including https://
 
     es = Elasticsearch(
@@ -56,7 +56,7 @@ def create_index_elastic(keyword):
 @app.task
 def delivery_firehose(keyword):
     print("---------- CREATING DELIVERY STREAM -----------")
-    firehose = boto3.client('firehose', aws_access_key_id= AWS_ACCESS_KEY, aws_secret_access_key= AWS_SECRET_ACCESS_KEY, region_name='eu-west-1')
+    firehose = boto3.client('firehose', aws_access_key_id= ac.AWS_ACCESS_KEY, aws_secret_access_key= ac.AWS_SECRET_ACCESS_KEY, region_name='eu-west-1')
     response = firehose.create_delivery_stream(
         DeliveryStreamName=keyword+'_delivery',
         DeliveryStreamType='KinesisStreamAsSource',

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import ereputation.access as ac
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -126,8 +127,6 @@ BROKER_TRANSPORT_OPTIONS = {
     'region': 'eu-west-1',
 }
 
-AWS_ACCESS_KEY = 'AKIAJUMDFBC7BOGP3GUA'
-AWS_SECRET_ACCESS_KEY = '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'
-broker_url = 'sqs://AKIAJUMDFBC7BOGP3GUA:xbPVEOdi97O62Q6XeU5Hy07ZMf4TZ1aOvyfjID0g@'
-BROKER_USER = AWS_ACCESS_KEY
-BROKER_PASSWORD = AWS_SECRET_ACCESS_KEY
+broker_url = 'sqs://'+ ac.AWS_ACCESS_KEY +':'+ ac.AWS_SECRET_ACCESS_KEY +'@'
+BROKER_USER = ac.AWS_ACCESS_KEY
+BROKER_PASSWORD = ac.AWS_SECRET_ACCESS_KEY
