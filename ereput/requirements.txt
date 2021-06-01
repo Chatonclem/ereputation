@@ -44,7 +44,7 @@ tabulate==0.7.5
 termcolor==1.1.0
 texttable==0.9.1
 TwitterAPI==2.5.4
-urllib3==1.22
+urllib3==1.26.5
 vine==1.1.4
 virtualenv==16.0.0
 websocket-client==0.48.0
