@@ -12,7 +12,7 @@ cement==2.8.2
 certifi==2018.4.16
 chardet==3.0.4
 colorama==0.3.9
-Django==1.9.12
+Django==2.2.24
 docker==3.4.1
 docker-compose==1.21.2
 docker-pycreds==0.3.0
